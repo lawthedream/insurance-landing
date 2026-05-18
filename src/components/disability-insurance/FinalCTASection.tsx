@@ -37,6 +37,8 @@ const FinalCTASection: React.FC = () => {
           disabilityStatus: '', // Not strictly tracked in this landing page
           message: formData.message,
           sourcePage: '후유장해보험금 랜딩페이지',
+          pageReferrer: typeof document !== 'undefined' ? document.referrer : '',
+          landingUrl: typeof window !== 'undefined' ? window.location.href : '',
         }),
       });
 

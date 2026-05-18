@@ -40,6 +40,8 @@ const FinalCTASection: React.FC = () => {
           accidentType,
           message,
           sourcePage: '산재보험',
+          pageReferrer: typeof document !== 'undefined' ? document.referrer : '',
+          landingUrl: typeof window !== 'undefined' ? window.location.href : '',
         }),
       });
 

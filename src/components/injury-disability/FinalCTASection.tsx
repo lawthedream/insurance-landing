@@ -42,6 +42,8 @@ const FinalCTASection: React.FC = () => {
           disabilityStatus,
           message,
           sourcePage: '메인',
+          pageReferrer: typeof document !== 'undefined' ? document.referrer : '',
+          landingUrl: typeof window !== 'undefined' ? window.location.href : '',
         }),
       });
 

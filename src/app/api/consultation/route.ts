@@ -1,6 +1,64 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '../../../lib/supabaseClient';
 
+const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL || '';
+
+const sanitize = (v: unknown) =>
+    typeof v === 'string' && v.trim().length > 0 ? v.trim() : '정보 없음';
+
+const getClientIP = (req: Request) => {
+    const fwd = req.headers.get('x-forwarded-for');
+    if (fwd) return fwd.split(',')[0].trim();
+    return (
+        req.headers.get('cf-connecting-ip') ||
+        req.headers.get('x-real-ip') ||
+        '알 수 없음'
+    );
+};
+
+// Google Apps Script(Web App)로 상담 신청 1건을 전송해 스프레드시트에 행을 추가한다.
+// 텔레그램/Supabase 와 독립적으로 동작하며, 실패해도 사용자 응답에는 영향을 주지 않는다.
+async function appendToSheet(body: any, request: Request) {
+    if (!APPS_SCRIPT_URL) {
+        console.warn('[sheet] APPS_SCRIPT_URL 미설정 — 시트 기록 건너뜀');
+        return;
+    }
+
+    const payload = {
+        source: 'cpc',
+        name: sanitize(body.name),
+        phone: sanitize(body.phone),
+        accidentType: sanitize(body.accidentType),
+        disabilityStatus: sanitize(body.disabilityStatus),
+        message: sanitize(body.message),
+        sourcePage: sanitize(body.sourcePage),
+        ip: getClientIP(request),
+        timestamp: new Date().toISOString(),
+        userAgent: request.headers.get('user-agent') || '',
+        referer: request.headers.get('referer') || '',
+        pageReferrer: sanitize(body.pageReferrer),
+        landingUrl: sanitize(body.landingUrl),
+    };
+
+    try {
+        const res = await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            redirect: 'follow',
+            signal: AbortSignal.timeout(8000),
+        });
+
+        if (!res.ok) {
+            console.error('[sheet] 시트 기록 실패:', res.status, await res.text());
+        } else {
+            console.log('[sheet] 시트 기록 완료');
+        }
+    } catch (err) {
+        console.error('[sheet] 시트 기록 오류:', err);
+    }
+}
+
 export async function POST(request: Request) {
     try {
         const body = await request.json();
@@ -77,6 +135,10 @@ ${message || '없음'}
         } else {
             console.warn('Telegram token or chat ID is not configured.');
         }
+
+        // 3-1. Google 스프레드시트 기록 (신규)
+        // 텔레그램/Supabase 와 독립. 내부에서 에러를 삼키므로 실패해도 응답에 영향 없음.
+        await appendToSheet(body, request);
 
         // 4. Return success response
         return NextResponse.json({ success: true }, { status: 200 });
