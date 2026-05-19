@@ -11,7 +11,7 @@ const FinalCTASection: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [accidentType, setAccidentType] = useState('산재 신청 필요');
   const [message, setMessage] = useState('');
-  const [isConsent, setIsConsent] = useState(false);
+  const [isConsent, setIsConsent] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
@@ -57,7 +57,7 @@ const FinalCTASection: React.FC = () => {
       setPhone('');
       setAccidentType('산재 신청 필요');
       setMessage('');
-      setIsConsent(false);
+      setIsConsent(true);
     } catch (err: any) {
       console.error('Submission error:', err);
       alert(err.message || '신청 중 오류가 발생했습니다. 다시 시도해주세요.');

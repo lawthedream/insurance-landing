@@ -11,7 +11,7 @@ const FinalCTASection: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [accidentType, setAccidentType] = useState('교통사고');
   const [message, setMessage] = useState('');
-  const [isConsent, setIsConsent] = useState(false);
+  const [isConsent, setIsConsent] = useState(true);
   const [disabilityStatus, setDisabilityStatus] = useState('진단 전');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -60,7 +60,7 @@ const FinalCTASection: React.FC = () => {
       setAccidentType('교통사고');
       setMessage('');
       setDisabilityStatus('진단 전');
-      setIsConsent(false);
+      setIsConsent(true);
     } catch (err: any) {
       console.error('Submission error:', err);
       alert(err.message || '신청 중 오류가 발생했습니다. 다시 시도해주세요.');

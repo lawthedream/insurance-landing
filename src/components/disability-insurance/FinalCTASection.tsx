@@ -10,7 +10,7 @@ const FinalCTASection: React.FC = () => {
     phone: "",
     type: "",
     message: "",
-    agree: false,
+    agree: true,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
