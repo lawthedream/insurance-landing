@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import TopRightKakaoButton from "../components/TopRightKakaoButton";
 import TopButton from "../components/TopButton";
+import NaverAnalytics from "../components/NaverAnalytics";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -41,6 +43,9 @@ export default function RootLayout({
                 <TopRightKakaoButton />
                 <TopButton />
                 <Analytics />
+                {/* 네이버 검색광고 전환추적 공통 스크립트 */}
+                <Script src="//wcs.naver.net/wcslog.js" strategy="afterInteractive" />
+                <NaverAnalytics />
             </body>
         </html>
     );
