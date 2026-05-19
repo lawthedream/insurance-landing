@@ -48,7 +48,7 @@ const Navbar: React.FC = () => {
         {/* Desktop Action Buttons - Right */}
         <div className="hidden lg:flex items-center gap-2">
           {pathname !== '/' && (
-            <a href="/" className="px-3 py-1 bg-[#3182A4] text-white rounded-lg text-sm hover:bg-[#205b75] transition-all whitespace-nowrap">메인</a>
+            <a href="/insurance" className="px-3 py-1 bg-[#3182A4] text-white rounded-lg text-sm hover:bg-[#205b75] transition-all whitespace-nowrap">후유장해</a>
           )}
           {pathname !== '/traffic-accident' && (
             <a href="/traffic-accident" className="px-3 py-1 bg-[#3182A4] text-white rounded-lg text-sm hover:bg-[#205b75] transition-all whitespace-nowrap">교통사고합의</a>
@@ -77,7 +77,7 @@ const Navbar: React.FC = () => {
           <a href="#contact-form" className="hover:text-[#3182A4]" onClick={() => setMobileMenuOpen(false)}>고객센터</a>
           <div className="flex flex-col gap-2 mt-2">
             {pathname !== '/' && (
-              <a href="/" className="flex-1 text-center py-2 bg-[#3182A4] text-white rounded-lg text-sm hover:bg-[#205b75] transition-colors">메인</a>
+              <a href="/insurance" className="flex-1 text-center py-2 bg-[#3182A4] text-white rounded-lg text-sm hover:bg-[#205b75] transition-colors">후유장해</a>
             )}
             {pathname !== '/traffic-accident' && (
               <a href="/traffic-accident" className="flex-1 text-center py-2 bg-[#3182A4] text-white rounded-lg text-sm hover:bg-[#205b75] transition-colors">교통사고합의</a>
