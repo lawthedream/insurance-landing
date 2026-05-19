@@ -3,10 +3,13 @@
 import * as React from "react";
 import Link from "next/link";
 import { CheckCircle2, Home, ArrowLeft } from "lucide-react";
+import NaverConversion from "../../components/NaverConversion";
 
 export default function SuccessPage() {
     return (
         <main className="min-h-screen bg-[#F4F7F9] flex items-center justify-center p-6">
+            {/* 네이버 전환 이벤트 — 상담신청 완료(lead) */}
+            <NaverConversion type="lead" />
             <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center animate-fade-in-up">
                 <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8 animate-scale-up">
                     <CheckCircle2 className="w-10 h-10 text-green-600" />
