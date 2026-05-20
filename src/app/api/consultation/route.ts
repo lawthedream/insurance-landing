@@ -7,13 +7,14 @@ const sanitize = (v: unknown) =>
     typeof v === 'string' && v.trim().length > 0 ? v.trim() : '정보 없음';
 
 const getClientIP = (req: Request) => {
+    // Cloudflare 가 앞단에 있을 때 실제 방문자 IP 는 CF-Connecting-IP 에 담긴다.
+    // (Cloudflare→Vercel 구조에서 x-forwarded-for 첫 항목이 Cloudflare 서버 IP 로
+    //  찍히는 경우가 있어, CF-Connecting-IP 를 1순위로 읽는다.)
+    const cf = req.headers.get('cf-connecting-ip');
+    if (cf) return cf.trim();
     const fwd = req.headers.get('x-forwarded-for');
     if (fwd) return fwd.split(',')[0].trim();
-    return (
-        req.headers.get('cf-connecting-ip') ||
-        req.headers.get('x-real-ip') ||
-        '알 수 없음'
-    );
+    return req.headers.get('x-real-ip') || '알 수 없음';
 };
 
 // Google Apps Script(Web App)로 상담 신청 1건을 전송해 스프레드시트에 행을 추가한다.
