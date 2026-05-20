@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import TopRightKakaoButton from "../components/TopRightKakaoButton";
 import TopButton from "../components/TopButton";
 import NaverAnalytics from "../components/NaverAnalytics";
+import Smartlog from "../components/Smartlog";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -46,6 +47,8 @@ export default function RootLayout({
                 {/* 네이버 검색광고 전환추적 공통 스크립트 */}
                 <Script src="//wcs.naver.net/wcslog.js" strategy="afterInteractive" />
                 <NaverAnalytics />
+                {/* 스마트로그 공통 추적 스크립트 */}
+                <Smartlog />
             </body>
         </html>
     );
