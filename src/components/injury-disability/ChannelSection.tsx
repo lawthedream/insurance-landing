@@ -157,7 +157,7 @@ const ChannelSection: React.FC = () => {
                 <ScrollReveal>
                     <div className="text-center mt-12">
                         <a
-                            href="https://www.youtube.com/@TheDream_TV"
+                            href="https://www.youtube.com/@the_Dream_Traffic"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 bg-[#2C3E50] text-[#EDC967] px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#1a2533] transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
