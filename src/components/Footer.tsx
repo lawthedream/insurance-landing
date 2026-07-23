@@ -20,8 +20,8 @@ const Footer: React.FC = () => {
             </div>
             <address className="not-italic text-sm leading-loose text-slate-400 mb-6">
               <p><strong className="text-slate-300">대표자</strong> 박성훈</p>
-              <p><strong className="text-slate-300">사업자등록번호</strong> 123-45-67890</p>
-              <p><strong className="text-slate-300">주소</strong> 서울 서초구 사임당로 87, 세원빌딩 3층</p>
+              <p><strong className="text-slate-300">사업자등록번호</strong> 435-07-01602</p>
+              <p><strong className="text-slate-300">주소</strong> 서울 서초구 사임당로 87, 서원빌딩 3층</p>
               <p><strong className="text-slate-300">대표번호</strong> 02-6959-5053</p>
             </address>
           </div>

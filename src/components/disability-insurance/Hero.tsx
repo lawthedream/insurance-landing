@@ -37,11 +37,15 @@ const Hero: React.FC = () => {
           muted
           loop
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-60"
+          className="hidden md:block absolute inset-0 w-full h-full object-cover opacity-60"
         >
-          <source src="/hero-insu.mov" type="video/quicktime" />
-          <source src="/hero-insu.mov" type="video/mp4" />
+          <source src="/hero-insu.mp4" type="video/mp4" />
         </video>
+        <img
+          src="/hero-insu-mobile.jpg"
+          alt=""
+          className="block md:hidden absolute inset-0 w-full h-full object-cover opacity-60"
+        />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(64,64,64,0.15)_0%,rgba(26,26,26,0.8)_60%,rgba(15,15,15,1)_100%)]"></div>
       </div>
 

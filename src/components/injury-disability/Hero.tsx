@@ -32,18 +32,22 @@ const Hero: React.FC = () => {
 
   return (
     <div className="relative w-full min-h-screen flex flex-col justify-center overflow-hidden">
-      {/* Background Video with Subtle Darkened Overlay for sleekness */}
+      {/* Background Video (desktop) / Static Image (mobile) with Subtle Darkened Overlay */}
       <div className="absolute inset-0 overflow-hidden bg-[#0A192F]">
         <video
           autoPlay
           muted
           loop
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-60"
+          className="hidden md:block absolute inset-0 w-full h-full object-cover opacity-60"
         >
-          <source src="/hero-main.mov" type="video/quicktime" />
-          <source src="/hero-main.mov" type="video/mp4" />
+          <source src="/hero-main.mp4" type="video/mp4" />
         </video>
+        <img
+          src="/hero-main-mobile.jpg"
+          alt=""
+          className="block md:hidden absolute inset-0 w-full h-full object-cover opacity-60"
+        />
         {/* Radial gradient overlay for that classic framer glow */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(44,62,80,0.15)_0%,rgba(27,59,90,0.8)_60%,rgba(15,35,54,1)_100%)]"></div>
       </div>

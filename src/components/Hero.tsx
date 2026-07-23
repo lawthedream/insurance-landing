@@ -5,18 +5,22 @@ import { ArrowRight, CheckCircle2, Scale, Calculator, Briefcase } from 'lucide-r
 const Hero: React.FC = () => {
   return (
     <div className="relative w-full min-h-screen flex flex-col justify-center overflow-hidden">
-      {/* Background Video with Overlay */}
+      {/* Background Video (desktop) / Static Image (mobile) with Overlay */}
       <div className="absolute inset-0 overflow-hidden">
         <video
           autoPlay
           muted
           loop
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+          className="hidden md:block absolute inset-0 w-full h-full object-cover"
         >
-          <source src="/hero-bg.mov" type="video/quicktime" />
-          <source src="/hero-bg.mov" type="video/mp4" />
+          <source src="/hero-bg.mp4" type="video/mp4" />
         </video>
+        <img
+          src="/hero-bg-mobile.jpg"
+          alt=""
+          className="block md:hidden absolute inset-0 w-full h-full object-cover"
+        />
         <div className="absolute inset-0 bg-gradient-to-r from-[#1B3B5A] via-[#1B3B5A]/80 to-[#3182A4]/40"></div>
       </div>
 
