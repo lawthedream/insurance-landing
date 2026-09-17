@@ -1,7 +1,8 @@
 "use client";
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Send, Phone, MessageCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import ScrollReveal from '../ScrollReveal';
 
 const FinalCTASection: React.FC = () => {
@@ -14,6 +15,12 @@ const FinalCTASection: React.FC = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+
+  // /success 페이지 prefetch — 폼 제출 후 즉시 표시되도록 미리 로드
+  useEffect(() => {
+    router.prefetch('/success');
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +50,7 @@ const FinalCTASection: React.FC = () => {
       });
 
       if (response.ok) {
-        window.location.href = '/success';
+        router.push('/success');
       } else {
         const errorData = await response.json();
         alert(`신청 중 오류가 발생했습니다: ${errorData.error || '잠시 후 다시 시도해주세요.'}`);

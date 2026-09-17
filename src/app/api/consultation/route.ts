@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { waitUntil } from '@vercel/functions';
 import { supabase } from '../../../lib/supabaseClient';
 
 const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL || '';
@@ -16,6 +17,57 @@ const getClientIP = (req: Request) => {
     if (fwd) return fwd.split(',')[0].trim();
     return req.headers.get('x-real-ip') || '알 수 없음';
 };
+
+// Telegram 알림 전송 — 백그라운드 실행용 함수 (사용자 응답 후 계속됨)
+async function sendTelegramNotification(params: {
+    name: string;
+    phone: string;
+    accidentType: string;
+    disabilityStatus?: string;
+    message?: string;
+    sourcePage?: string;
+}) {
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+
+    if (!botToken || !chatId) {
+        console.warn('Telegram token or chat ID is not configured.');
+        return;
+    }
+
+    const telegramMessage = `
+🚨새로운 상담 신청이 접수되었습니다!🚨
+
+👤 성함: ${params.name}
+📞 연락처: ${params.phone}
+🚗 사고 유형: ${params.accidentType}
+📋 장해 진단: ${params.disabilityStatus || '정보 없음'}
+🔗 신청 경로: ${params.sourcePage || '알 수 없음'}
+📄 문의 내용:
+${params.message || '없음'}
+      `.trim();
+
+    const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+    try {
+        const telegramRes = await fetch(telegramUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: telegramMessage,
+            }),
+        });
+
+        if (!telegramRes.ok) {
+            console.error('Telegram API Error:', await telegramRes.text());
+        }
+    } catch (tgError) {
+        console.error('Telegram notification fetch failed:', tgError);
+    }
+}
 
 // Google Apps Script(Web App)로 상담 신청 1건을 전송해 스프레드시트에 행을 추가한다.
 // 텔레그램/Supabase 와 독립적으로 동작하며, 실패해도 사용자 응답에는 영향을 주지 않는다.
@@ -73,7 +125,7 @@ export async function POST(request: Request) {
             );
         }
 
-        // 2. Insert into Supabase
+        // 2. Insert into Supabase (필수 - 사용자 응답 전 확인)
         const { error: dbError } = await supabase
             .from('consultations')
             .insert([
@@ -95,53 +147,21 @@ export async function POST(request: Request) {
             );
         }
 
-        // 3. Send Telegram Notification
-        const botToken = process.env.TELEGRAM_BOT_TOKEN;
-        const chatId = process.env.TELEGRAM_CHAT_ID;
+        // 3. Telegram + Google Sheets는 백그라운드로 처리 (사용자는 대기하지 않음)
+        // waitUntil()은 응답 반환 후에도 Vercel이 해당 작업을 계속 실행 보장 (Vercel Pro 기능)
+        waitUntil(
+            sendTelegramNotification({
+                name,
+                phone,
+                accidentType,
+                disabilityStatus,
+                message,
+                sourcePage,
+            })
+        );
+        waitUntil(appendToSheet(body, request));
 
-        if (botToken && chatId) {
-            const telegramMessage = `
-🚨새로운 상담 신청이 접수되었습니다!🚨
-
-👤 성함: ${name}
-📞 연락처: ${phone}
-🚗 사고 유형: ${accidentType}
-📋 장해 진단: ${disabilityStatus || '정보 없음'}
-🔗 신청 경로: ${sourcePage || '알 수 없음'}
-📄 문의 내용:
-${message || '없음'}
-      `.trim();
-
-            const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-
-            try {
-                const telegramRes = await fetch(telegramUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        text: telegramMessage,
-                    }),
-                });
-
-                if (!telegramRes.ok) {
-                    console.error('Telegram API Error:', await telegramRes.text());
-                    // 텔레그램 전송에 실패해도 DB 저장은 완료되었으므로 성공으로 간주하되 로그만 남김
-                }
-            } catch (tgError) {
-                console.error('Telegram notification fetch failed:', tgError);
-            }
-        } else {
-            console.warn('Telegram token or chat ID is not configured.');
-        }
-
-        // 3-1. Google 스프레드시트 기록 (신규)
-        // 텔레그램/Supabase 와 독립. 내부에서 에러를 삼키므로 실패해도 응답에 영향 없음.
-        await appendToSheet(body, request);
-
-        // 4. Return success response
+        // 4. 즉시 응답 반환 (Supabase 저장만 확인)
         return NextResponse.json({ success: true }, { status: 200 });
     } catch (error) {
         console.error('Unexpected API Error:', error);

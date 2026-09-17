@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Phone, MessageCircle, AlertTriangle, CheckCircle2, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import ScrollReveal from './ScrollReveal';
@@ -14,6 +14,11 @@ const FinalCTASection: React.FC = () => {
   const [isConsent, setIsConsent] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+
+  // /success 페이지 prefetch — 폼 제출 후 즉시 표시되도록 미리 로드
+  useEffect(() => {
+    router.prefetch('/success');
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
